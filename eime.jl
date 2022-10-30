@@ -7,11 +7,11 @@ Pkg.instantiate()
 import Statistics
 using ForwardDiff
 
-valname = "\\phi"
+flabel = "f"
 digits_after_decimal_point = 4
 
-function stdround(x)
-	return round(x, digits=digits_after_decimal_point)
+function stdround(val)
+	return round(val, digits=digits_after_decimal_point)
 end
 
 function enclose_subscript(str::String)
@@ -69,7 +69,7 @@ tests = @tests()(n)
 
 ## Calculations
 
-const vals = [stdround(x(args(i)...)) for i = 1:n]
+const vals = [stdround(f(args(i)...)) for i = 1:n]
 const mean = Statistics.mean(vals) |> stdround
 const sd = Statistics.stdm(vals[1:n], mean, corrected=true) |> stdround
 
@@ -80,7 +80,7 @@ end
 
 const sdm = sd / sqrt(n) |> stdround
 const randerr = tests.t * sdm |> stdround
-const gradients = [ForwardDiff.gradient((args) -> x(args...), args(i)) for i = 1:n]
+const gradients = [ForwardDiff.gradient((args) -> f(args...), args(i)) for i = 1:n]
 const syserr = n \ sum(abs(gradients[i][j]) * errors[j] for j = 1:length(vars), i = 1:n) |> stdround
 const abserr = sqrt(randerr^2 + syserr^2) |> stdround
 
@@ -92,15 +92,15 @@ end
 println(
 	join(
 		[
-			labeled("Initial values:", "$(enclose_subscript("$(valname)_i")) = \\{$(join(vals, ", "))\\}"),
-			labeled("Mean value:", "\\bar{$(valname)} = \\frac{1}{n}\\sum_{i = 1}^{n}$(valname)_i = $(mean)"),
-			labeled("Standard deviation:", "S_{$(valname)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(valname)_i-\\bar{$(valname)})^2} = $(sd)"),
-			labeled("Check for gross errors:", "\\left\\{\\begin{array}{lr} \\frac{|$(valname)_{min} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\\\ \\frac{|$(valname)_{max} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\end{array}\\right." * (gross_errors_present ? "\\\\ \\text{Gross errors present!}" : "")),
-			labeled("Standard deviation of the mean:", "S_{\\bar{$(valname)}} = \\frac{S_{$(valname)}}{\\sqrt{n}} = $(sdm)"),
-			labeled("Random error:", "\\Delta{\\bar{$(valname)}} = t_{p,n} \\cdot S_{\\bar{$(valname)}} = $(randerr)"),
-			labeled("Mean systematic error:", "\\theta_{$(valname)} = \\frac{1}{n} \\sum_{\\chi \\in \\{$(join(vars, ','))\\}} \\theta_\\chi ( \\sum_{i = 1}^{n} |\\frac{\\partial{$(valname)}}{\\partial{\\chi}}($(join(["{$var}_i" for var in vars], ',')))| ) = $(syserr)"),
-			labeled("Absolute error:", "\\Delta{$(valname)} = \\sqrt{{\\Delta{\\bar{$(valname)}}^2 + \\theta_{$(valname)}^2}} = $(abserr)"),
-			labeled("Final value:", "$(valname) = \\bar{$(valname)} \\pm \\Delta{$(valname)} = $(mean) \\pm $(abserr),\\,\\, p = $(p),\\,\\, n = $(n)"),
+			labeled("Initial values:", "$(enclose_subscript("$(flabel)_i")) = \\{$(join(vals, ", "))\\}"),
+			labeled("Mean value:", "\\bar{$(flabel)} = \\frac{1}{n}\\sum_{i = 1}^{n}$(flabel)_i = $(mean)"),
+			labeled("Standard deviation:", "S_{$(flabel)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(flabel)_i-\\bar{$(flabel)})^2} = $(sd)"),
+			labeled("Check for gross errors:", "\\left\\{\\begin{array}{lr} \\frac{|$(flabel)_{min} - \\bar{$(flabel)}|}{S_{$(flabel)}} \\le v_{p,n} \\\\ \\frac{|$(flabel)_{max} - \\bar{$(flabel)}|}{S_{$(flabel)}} \\le v_{p,n} \\end{array}\\right." * (gross_errors_present ? "\\\\ \\text{Gross errors present!}" : "")),
+			labeled("Standard deviation of the mean:", "S_{\\bar{$(flabel)}} = \\frac{S_{$(flabel)}}{\\sqrt{n}} = $(sdm)"),
+			labeled("Random error:", "\\Delta{\\bar{$(flabel)}} = t_{p,n} \\cdot S_{\\bar{$(flabel)}} = $(randerr)"),
+			labeled("Mean systematic error:", "\\theta_{$(flabel)} = \\frac{1}{n} \\sum_{\\chi \\in \\{$(join(vars, ','))\\}} \\theta_\\chi ( \\sum_{i = 1}^{n} |\\frac{\\partial{$(flabel)}}{\\partial{\\chi}}($(join(["{$var}_i" for var in vars], ',')))| ) = $(syserr)"),
+			labeled("Absolute error:", "\\Delta{$(flabel)} = \\sqrt{{\\Delta{\\bar{$(flabel)}}^2 + \\theta_{$(flabel)}^2}} = $(abserr)"),
+			labeled("Final value:", "$(flabel) = \\bar{$(flabel)} \\pm \\Delta{$(flabel)} = $(mean) \\pm $(abserr),\\,\\, p = $(p),\\,\\, n = $(n)"),
 		],
 		repeat(linebreak, 2) * '\n'
 	)

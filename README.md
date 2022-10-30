@@ -8,14 +8,16 @@ EIME takes a single argument - path to a Julia source file - and evaluates it.
 
 You can write any Julia code in an input file, but for the estimator to work properly you have to define the following variables:
 
-- `x` - main formula for calculations
+- `f` - main formula for calculations
 - `measurements` - a named tuple of measurement values
 - `errors` - a named tuple of systematic error values
 
 And optionally:
 
-- `valname` [default: `"\\phi"`, ϕ in LaTeX] - escaped symbol for the calculated value of main formula
-- `digits_after_decimal_point` [default: `4`] - number of digits after decimal point
+- `flabel` (default: `"f"`)- escaped label for the main value to be calculated
+- `digits_after_decimal_point` (default: `4`) - number of digits after decimal point
+
+See [in.eime.jl](in.eime.jl) for more information.
 
 See [in.eime.example.jl](in.eime.example.jl) for an example.
 

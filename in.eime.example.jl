@@ -10,14 +10,14 @@ const g = 9.8
 ## ================
 ## Given Φ(m₁, m₂) = (m₁+m₂)g, where g = 9.8 as defined in (1) Variables:
 ## ----------------
-x = (m_1, m_2) -> (m_1 + m_2) * g
+f = (m_1, m_2) -> (m_1 + m_2) * g
 
-## ==============
-## (3) Value name
-## ==============
+## ===============
+## (3) Value label
+## ===============
 ## Given Φ(m₁, m₂), `Φ` has a escape sequence of `\Phi`
-## --------------
-valname = "\\Phi"
+## ---------------
+flabel = "\\Phi"
 
 ## =====================
 ## (4) Decimal precision

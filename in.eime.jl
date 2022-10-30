@@ -20,25 +20,25 @@
 ## ----------------
 ## Examples:
 ##   - v(t) = Δh/t, where Δh is constant:
-##     x = (t) -> Δh/t
+##     f = (t) -> Δh/t
 ##   - F(m₁, m₂) = (m₁+m₂)g, where g = 9.8 as per defined in (1) Variables:
-##     x = (m_1, m_2) -> (m_1 + m_2) * g
+##     f = (m_1, m_2) -> (m_1 + m_2) * g
 ## ----------------
-x = () -> nothing
+f = () -> nothing
 
-## ==============
-## (3) Value name
-## ==============
-## Escaped name of value that will be used in generated LaTeX document
-## Default: "x"
-## --------------
+## ===============
+## (3) Value label
+## ===============
+## Escaped label of value that will be used in the generated LaTeX document
+## Default: "f"
+## ---------------
 ## Examples:
 ##   - Given v(t); `v` has no escape sequence as it is an ASCII character:
-##     valname = "v"
+##     flabel = "v"
 ##   - Given ϕ(χ); `ϕ` has an escape sequence of `\phi` and `\` has to be escaped with another `\`:
-##     valname = "\\phi"
-## --------------
-valname = "x"
+##     flabel = "\\phi"
+## ---------------
+flabel = "f"
 
 ## =====================
 ## (4) Decimal precision
