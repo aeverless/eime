@@ -14,6 +14,20 @@ function stdround(x)
 	return round(x, digits=digits_after_decimal_point)
 end
 
+function enclose_subscript(str::String)
+	n_layers = 0
+	res = ""
+	for char in str
+		res *= char
+		if char == '_'
+			res *= '{'
+			n_layers += 1
+		end
+	end
+	res *= repeat('}', n_layers)
+	return res
+end
+
 if length(ARGS) == 0
 	@error "path to an input file was not provided"
 	exit()
@@ -21,11 +35,11 @@ end
 
 include(ARGS[1])
 
-const vars = keys(measurements)
+const vars = [enclose_subscript(string(var)) for var in keys(measurements)]
 
 macro args()
 	Meta.parse("""
-		(i) -> [$(join(["measurements.$var[i]" for var in vars], ','))]
+		(i) -> [$(join(["measurements.$var[i]" for var in keys(measurements)], ','))]
 	""")
 end
 
@@ -78,7 +92,7 @@ end
 println(
 	join(
 		[
-			labeled("Initial values:", "$(valname)_i = \\{$(join(vals, ", "))\\}"),
+			labeled("Initial values:", "$(enclose_subscript("$(valname)_i")) = \\{$(join(vals, ", "))\\}"),
 			labeled("Mean value:", "\\bar{$(valname)} = \\frac{1}{n}\\sum_{i = 1}^{n}$(valname)_i = $(mean)"),
 			labeled("Standard deviation:", "S_{$(valname)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(valname)_i-\\bar{$(valname)})^2} = $(sd)"),
 			labeled("Check for gross errors:", "\\left\\{\\begin{array}{lr} \\frac{|$(valname)_{min} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\\\ \\frac{|$(valname)_{max} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\end{array}\\right." * (gross_errors_present ? "\\\\ \\text{Gross errors present!}" : "")),
