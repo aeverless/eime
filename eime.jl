@@ -1,5 +1,9 @@
 ### Estimator of Indirect Measurement Errors (EIME)
 
+import Pkg
+Pkg.activate(".")
+Pkg.instantiate()
+
 import Statistics
 using ForwardDiff
 
