@@ -92,6 +92,7 @@ end
 println(
 	join(
 		[
+			labeled("Distribution Factors:", "v_{p,n} = $(tests.v),\\,\\, t_{p,n} = $(tests.t)"),
 			labeled("Initial values:", "$(enclose_subscript("$(flabel)_i")) = \\{$(join(vals, ", "))\\}"),
 			labeled("Mean value:", "\\bar{$(flabel)} = \\frac{1}{n}\\sum_{i = 1}^{n}$(flabel)_i = $(mean)"),
 			labeled("Standard deviation:", "S_{$(flabel)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(flabel)_i-\\bar{$(flabel)})^2} = $(sd)"),
