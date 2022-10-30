@@ -4,6 +4,8 @@ const θ = 2.1
 const ψ = θ * 6.8e-2
 
 x = (a, b, c) -> π * ψ * a / 8 * (b^2 + c^2)
+valname = "\\phi"
+digits_after_decimal_point = 4
 
 const measurements =
 	(

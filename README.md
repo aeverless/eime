@@ -12,14 +12,23 @@ You can write any Julia code in an input file, but for the estimator to work pro
 - `measurements` - a named tuple of measurement values
 - `errors` - a named tuple of systematic error values
 
+And optionally:
+
+- `valname` [default: `"\\phi"`, ϕ in LaTeX] - escaped symbol for the calculated value of main formula
+- `digits_after_decimal_point` [default: `4`] - number of digits after decimal point
+
 See [in.eime.example.jl](in.eime.example.jl) for an example.
+
+## Output
+
+EIME outputs a minimal LaTeX string that documents every step of estimating errors for given measurement data. It is recommended to use a MathJax renderer.
 
 ## Usage
 
 Via CLI:
 
 ```shell-session
-julia imeec.jl <in.eime.jl>
+julia imeec.jl [in.eime.jl]
 ```
 
-`<in.eime.jl>` is to be substituted for a path to an input file.
+`[in.eime.jl]` is to be substituted for a path to an input file.

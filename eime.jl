@@ -3,6 +3,18 @@
 import Statistics
 using ForwardDiff
 
+valname = "\\phi"
+digits_after_decimal_point = 4
+
+function stdround(x)
+	return round(x, digits=digits_after_decimal_point)
+end
+
+if length(ARGS) == 0
+	@error "path to an input file was not provided"
+	exit()
+end
+
 include(ARGS[1])
 
 const vars = keys(measurements)
@@ -15,6 +27,7 @@ end
 
 args = @args()
 
+const p = 0.95
 const n = length(measurements[1])
 
 ## Student's Distribution
@@ -25,7 +38,7 @@ const distribution_factors =
 		t=[3.18, 2.78, 2.57, 2.45, 2.36, 2.31, 2.26, 2.23],
 		β=[1.30, 0.72, 0.51, 0.40, 0.33, 0.29, 0.25, 0.23],
 		u=[0.94, 0.76, 0.64, 0.58, 0.52, 0.47, 0.42, 0.41],
-		v=[1.15, 1.46, 1.67, 1.82, 1.94, 2.03, 2.11, 2.18]
+		v=[1.15, 1.46, 1.67, 1.82, 1.94, 2.03, 2.11, 2.18],
 	)
 
 macro tests()
@@ -38,32 +51,39 @@ tests = @tests()(n)
 
 ## Calculations
 
-const xs = [x(args(i)...) for i = 1:n]
-println("Xs: ", join(xs, ", "))
+const vals = [stdround(x(args(i)...)) for i = 1:n]
+const mean = Statistics.mean(vals) |> stdround
+const sd = Statistics.stdm(vals[1:n], mean, corrected=true) |> stdround
 
-const mean = Statistics.mean(xs)
-println("Mean of x: ", mean)
-
-const sd = Statistics.stdm(xs[1:n], mean, corrected=true)
-println("Standard deviation: ", sd)
-
-if !(abs(minimum(xs) - mean) / sd ≤ tests.v && abs(maximum(xs) - mean) / sd ≤ tests.v)
-	println("Gross errors found!")
+const gross_errors_present = !(abs(minimum(vals) - mean) / sd ≤ tests.v && abs(maximum(vals) - mean) / sd ≤ tests.v)
+if gross_errors_present
+	@warn "gross errors present, please exclude erroneous values for calculations to be more reliable"
 end
 
-const sd_mean = sd / sqrt(n)
-println("Standard deviation of the mean: ", sd_mean)
-
-const Δmean = tests.t * sd_mean
-println("Δ of the mean: ", Δmean)
-
+const sdm = sd / sqrt(n) |> stdround
+const randerr = tests.t * sdm |> stdround
 const gradients = [ForwardDiff.gradient((args) -> x(args...), args(i)) for i = 1:n]
-println("Gradients: ", join(gradients, ", "))
+const syserr = n \ sum(abs(gradients[i][j]) * errors[j] for j = 1:length(vars), i = 1:n) |> stdround
+const abserr = sqrt(randerr^2 + syserr^2) |> stdround
 
-const θₓ = n \ sum(abs(gradients[i][j]) * errors[j] for j = 1:length(vars), i = 1:n)
-println("θₓ: ", θₓ)
+const linebreak = "\\\\"
+function labeled(label, str)
+	join(["\\text{$label}", str], linebreak * ' ')
+end
 
-const Δx = sqrt(Δmean^2 + θₓ^2)
-println("Δx: ", Δx)
-
-println("x = ", mean, " ± ", Δx)
+println(
+	join(
+		[
+			labeled("Initial values:", "$(valname)_i = \\{$(join(vals, ", "))\\}"),
+			labeled("Mean value:", "\\bar{$(valname)} = \\frac{1}{n}\\sum_{i = 1}^{n}$(valname)_i = $(mean)"),
+			labeled("Standard deviation:", "S_{$(valname)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(valname)_i-\\bar{$(valname)})^2} = $(sd)"),
+			labeled("Check for gross errors:", "\\left\\{\\begin{array}{lr} \\frac{|$(valname)_{min} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\\\ \\frac{|$(valname)_{max} - \\bar{$(valname)}|}{S_{$(valname)}} \\le v_{p,n} \\end{array}\\right." * (gross_errors_present ? "\\\\ \\text{Gross errors present!}" : "")),
+			labeled("Standard deviation of the mean:", "S_{\\bar{$(valname)}} = \\frac{S_{$(valname)}}{\\sqrt{n}} = $(sdm)"),
+			labeled("Random error:", "\\Delta{\\bar{$(valname)}} = t_{p,n} \\cdot S_{\\bar{$(valname)}} = $(randerr)"),
+			labeled("Mean systematic error:", "\\theta_{$(valname)} = \\frac{1}{n} \\sum_{\\chi \\in \\{$(join(vars, ','))\\}} \\theta_\\chi ( \\sum_{i = 1}^{n} |\\frac{\\partial{$(valname)}}{\\partial{\\chi}}($(join(["{$var}_i" for var in vars], ',')))| ) = $(syserr)"),
+			labeled("Absolute error:", "\\Delta{$(valname)} = \\sqrt{{\\Delta{\\bar{$(valname)}}^2 + \\theta_{$(valname)}^2}} = $(abserr)"),
+			labeled("Final value:", "$(valname) = \\bar{$(valname)} \\pm \\Delta{$(valname)} = $(mean) \\pm $(abserr),\\,\\, p = $(p),\\,\\, n = $(n)"),
+		],
+		repeat(linebreak, 2) * '\n'
+	)
+)
