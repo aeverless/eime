@@ -28,7 +28,7 @@ EIME outputs a minimal LaTeX string that documents every step of estimating erro
 Via CLI:
 
 ```shell-session
-julia imeec.jl [in.eime.jl]
+julia eime.jl [in.eime.jl]
 ```
 
 `[in.eime.jl]` is to be substituted for a path to an input file.
