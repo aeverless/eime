@@ -1,22 +1,46 @@
-### Input Example
+### EIME Input File Example
 
-const θ = 2.1
-const ψ = θ * 6.8e-2
+## =============
+## (1) Variables
+## =============
+const g = 9.8
 
-x = (a, b, c) -> π * ψ * a / 8 * (b^2 + c^2)
-valname = "\\phi"
-digits_after_decimal_point = 4
+## ================
+## (2) Main formula
+## ================
+## Given Φ(m₁, m₂) = (m₁+m₂)g, where g = 9.8 as defined in (1) Variables:
+## ----------------
+x = (m_1, m_2) -> (m_1 + m_2) * g
 
+## ==============
+## (3) Value name
+## ==============
+## Given Φ(m₁, m₂), `Φ` has a escape sequence of `\Phi`
+## --------------
+valname = "\\Phi"
+
+## =====================
+## (4) Decimal precision
+## =====================
+digits_after_decimal_point = 2
+
+## ====================
+## (5) Measurement Data
+## ====================
+##
+## ==================
+## (5.1) Measurements
+## ==================
 const measurements =
 	(
-		a=[20.5, 21.1, 19.8, 18.8, 20.3] * 1e-1,
-		b=[60.5, 60.6, 60.8, 60.6, 60.3] * 1e-1,
-		c=[2410, 2145, 2346, 2411, 2431] * 1e-3
+		m_1=[10, 15, 45, 70, 10],
+		m_2=[1, 5, 8, 12, 14],
 	)
-
+## ==================
+## (5.2) Errors
+## ==================
 const errors =
 	(
-		a=5e-4,
-		b=5e-4,
-		c=5e-1
+		m_1=0.1,
+		m_2=0.05,
 	)
