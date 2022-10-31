@@ -27,6 +27,8 @@ EIME outputs a minimal LaTeX string that documents every step of estimating erro
 
 ## Usage
 
+Julia is required to use EIME, you can install it from https://julialang.org/downloads/
+
 Via CLI:
 
 ```shell-session
