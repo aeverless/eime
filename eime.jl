@@ -100,10 +100,10 @@ println(
 				("Standard deviation", "S_{$(flabel)} = \\sqrt{\\frac{1}{n-1}\\sum_{i=1}^{n}($(flabel)_i-\\bar{$(flabel)})^2} = $(sd)"),
 				("Check for gross errors", "\\left\\{\\begin{array}{lr} \\frac{|$(flabel)_{min} - \\bar{$(flabel)}|}{S_{$(flabel)}} \\le v_{p,n} \\\\ \\frac{|$(flabel)_{max} - \\bar{$(flabel)}|}{S_{$(flabel)}} \\le v_{p,n} \\end{array}\\right." * (gross_errors_present ? "\\\\ \\text{Gross errors present!}" : "")),
 				("Standard deviation of the mean", "S_{\\bar{$(flabel)}} = \\frac{S_{$(flabel)}}{\\sqrt{n}} = $(sdm)"),
-				("Random error", "\\Delta{\\bar{$(flabel)}} = t_{p,n} \\cdot S_{\\bar{$(flabel)}} = $(randerr)"),
+				("Random error", "\\Delta{$(flabel)} = t_{p,n} \\cdot S_{\\bar{$(flabel)}} = $(randerr)"),
 				("Mean systematic error", "\\theta_{$(flabel)} = \\frac{1}{n} \\sum_{\\chi \\in \\{$(join(vars, ','))\\}} \\theta_\\chi ( \\sum_{i = 1}^{n} |\\frac{\\partial{$(flabel)}}{\\partial{\\chi}}($(join(["{$var}_i" for var in vars], ',')))| ) = $(syserr)"),
-				("Absolute error", "\\Delta{$(flabel)} = \\sqrt{{\\Delta{\\bar{$(flabel)}}^2 + \\theta_{$(flabel)}^2}} = $(abserr)"),
-				("Final value", "$(flabel) = \\bar{$(flabel)} \\pm \\Delta{$(flabel)} = $(mean) \\pm $(abserr),\\,\\, p = $(p),\\,\\, n = $(n)"),
+				("Absolute error", "\\Delta{\\bar{$(flabel)}} = \\sqrt{{\\Delta{$(flabel)}^2 + \\theta_{$(flabel)}^2}} = $(abserr)"),
+				("Final value", "$(flabel) = \\bar{$(flabel)} \\pm \\Delta{\\bar{$(flabel)}} = $(mean) \\pm $(abserr),\\,\\, p = $(p),\\,\\, n = $(n)"),
 			]),
 		repeat(linebreak, 2) * '\n'
 	)
