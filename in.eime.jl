@@ -21,24 +21,41 @@
 ## Examples:
 ##   - v(t) = Δh/t, where Δh is constant:
 ##     f = (t) -> Δh/t
-##   - F(m₁, m₂) = (m₁+m₂)g, where g = 9.8 as per defined in (1) Variables:
-##     f = (m_1, m_2) -> (m_1 + m_2) * g
+##   - τ(v₁, v₂) = (v₁+v₂)/g, where g = 9.8 as defined in (1) Variables:
+##     f = (v_1, v_2) -> (v_1 + v_2) / g
 ## ----------------
 f = () -> nothing
 
-## ===============
-## (3) Value label
-## ===============
+## =========
+## (3) Value
+## =========
+## ===========
+## (3.1) Label
+## ===========
 ## Escaped label of value that will be used in the generated LaTeX document
 ## Default: "f"
-## ---------------
+## -----------
 ## Examples:
 ##   - Given v(t); `v` has no escape sequence as it is an ASCII character:
-##     flabel = "v"
+##     label = "v"
 ##   - Given ϕ(χ); `ϕ` has an escape sequence of `\phi` and `\` has to be escaped with another `\`:
-##     flabel = "\\phi"
-## ---------------
-flabel = "f"
+##     label = "\\phi"
+## -----------
+label = "f"
+
+## ==========
+## (3.2) Unit
+## ==========
+## String that will denote the unit of values calculated
+## Default: ""
+## ----------
+## Examples:
+##   - Given v(t); v is a speed function:
+##     unit may be "m/s", "km/h", etc.
+##   - Given a(t); a is an acceleration function:
+##     unit may be "m/s^2", "km/h^2", etc.
+## ----------
+unit = ""
 
 ## =====================
 ## (4) Decimal precision
@@ -69,27 +86,24 @@ const measurements =
 	(
 
 	)
-## ==================
+## ============
 ## (5.2) Errors
-## ==================
+## ============
 ## Systematic error values for each variable
-## ------------------
+## ------------
 const errors =
 	(
 
 	)
-## ------------------
+## ------------
 ## Example:
 ##   const measurements =
 ##       (
-##           A_x=[10, 25, 35, 50, 60],
-##           A_y=[1, 5, 8, 12, 14],
-##           b=[100, 124, 145, 147, 187],
+##           v_1=[1388, 1536, 1726, 1664, 1771],
+##           v_2=[142, 155, 171, 162, 175],
 ##       )
-##
 ##   const errors =
-##       (
-##           A_x=0.025,
-##           A_y=0.05,
-##           b=1.2e1,
-##       )
+##      (
+##          v_1=1,
+##          v_2=0.5,
+##      )
